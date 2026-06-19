@@ -1,1 +1,84 @@
 /* You can add global styles to this file, and also import other style files */
+// ==========================================
+// 1. Sobreescribir variables de Bootstrap
+// ==========================================
+
+// --- Modo claro (valores por defecto que quieras cambiar) ---
+$primary: #008080;
+$secondary: #4e5d6c;
+$success: #198754;
+$info: #0dcaf0;
+$warning: #ffc107;
+$danger: #dc3545;
+
+$border-radius: 1.25rem;
+$border-radius-lg: 0.7rem;
+$card-border-radius: $border-radius;
+$card-bg: var(--bs-tertiary-bg);
+$body-tertiary-bg: #f1f8f8;
+
+// Tipografía corporativa
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+$font-family-base: $font-family-sans-serif;
+
+$enable-dark-mode: true;
+
+$link-color: $primary;
+$link-hover-color: darken($primary, 10%);
+
+// ==========================================
+// 2. Importar Bootstrap
+// ==========================================
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+// ==========================================
+// 3. Personalizaciones específicas para el tema oscuro
+// ==========================================
+
+[data-bs-theme="dark"] {
+    --bs-primary: #2ca2a8;
+    --bs-primary-rgb: 44, 162, 168;
+    --bs-secondary: #8b9da9;
+    --bs-secondary-rgb: 139, 157, 169;
+    --bs-success: #75b798;
+    --bs-success-rgb: 117, 183, 152;
+    --bs-info: #6edff6;
+    --bs-info-rgb: 110, 223, 246;
+    --bs-warning: #ffda6a;
+    --bs-warning-rgb: 255, 218, 106;
+    --bs-danger: #ea868f;
+    --bs-danger-rgb: 234, 134, 143;
+
+    // Cambiar fondos y textos para el dashboard
+    --bs-body-bg: #121b22; // fondo muy oscuro, casi negro azulado
+    --bs-body-bg-rgb: 18, 27, 34;
+    --bs-body-color: #e0e6ed;
+    --bs-body-color-rgb: 224, 230, 237;
+    --bs-tertiary-bg: #162e35;
+    --bs-tertiary-bg-rgb: 22, 46, 53;
+    --bs-border-color: #3a4755;
+
+    // Ajustar algunas sombras para dar profundidad
+    --bs-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+    --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.4);
+}
+
+// ==========================================
+// 4. Personalización global de btn-outline-*
+//    Sin borde, texto normal, color en hover
+// ==========================================
+@each $color in (primary, secondary, success, info, warning, danger, light, dark) {
+    .btn-outline-#{$color} {
+        --bs-btn-border-color: var(--bs-primary);
+        --bs-btn-color: var(--bs-primary);
+        --bs-btn-hover-color: var(--bs-#{$color});
+        --bs-btn-hover-bg: transparent;
+        --bs-btn-hover-border-color: var(--bs-#{$color});
+        --bs-btn-active-color: var(--bs-body-color);
+        --bs-btn-active-bg: rgba(var(--bs-#{$color}-rgb), 0.12);
+        --bs-btn-active-border-color: transparent;
+        --bs-btn-disabled-color: var(--bs-secondary-color);
+        --bs-btn-disabled-border-color: transparent;
+    }
+}

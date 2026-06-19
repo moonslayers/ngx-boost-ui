@@ -29,6 +29,15 @@
           "options": {
             "tsConfig": "projects/ngx-boost-sidebar-menu/tsconfig.spec.json"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-boost-sidebar-menu/**/*.ts",
+              "projects/ngx-boost-sidebar-menu/**/*.html"
+            ]
+          }
         }
       }
     },
@@ -54,6 +63,15 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/ngx-boost-topbar/tsconfig.spec.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-boost-topbar/**/*.ts",
+              "projects/ngx-boost-topbar/**/*.html"
+            ]
           }
         }
       }
@@ -121,6 +139,15 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/demo-app/**/*.ts",
+              "projects/demo-app/**/*.html"
+            ]
+          }
         }
       }
     }

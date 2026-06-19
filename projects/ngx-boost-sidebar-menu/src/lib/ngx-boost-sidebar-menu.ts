@@ -6,4 +6,5 @@ import { Component } from '@angular/core';
   template: ` <p>ngx-boost-sidebar-menu works!</p> `,
   styles: ``,
 })
-export class NgxBoostSidebarMenu {}
+export class NgxBoostSidebarMenu {
+}
