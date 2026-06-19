@@ -1,0 +1,102 @@
+// =============================================
+// ngx-boost-sidebar-menu — Estilos del sidebar
+// Soporta Bootstrap 5 temas claro/oscuro
+// =============================================
+
+.sidebar {
+  width: 260px;
+  transition: width 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+  z-index: 1040;
+}
+
+.sidebar:not(.is-open) {
+  width: 0;
+}
+
+.sidebar-item {
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(var(--bs-emphasis-color-rgb), 0.06);
+}
+
+.sidebar-item.active {
+  background-color: rgba(var(--bs-primary-rgb), 0.8);
+  color: white !important;
+  font-weight: 500;
+}
+
+.sidebar-item-icon-bg .sidebar-item-icon {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: calc(var(--bs-border-radius) * 0.4);
+}
+
+.sidebar-submenu {
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+  }
+}
+
+.sidebar-arrow {
+  transition: transform 0.25s ease;
+  font-size: 0.75em;
+}
+
+.sidebar-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.sidebar-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar-footer .btn:not([class*="btn-outline"]):hover {
+  color: var(--bs-primary);
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    width: 260px !important;
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .sidebar:not(.is-open) {
+    transform: translateX(-100%);
+  }
+}
+
+@media (min-width: 992px) {
+  .sidebar-backdrop {
+    display: none;
+  }
+}

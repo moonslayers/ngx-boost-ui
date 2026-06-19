@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "NgxBoostSidebarMenuNgAdd",
+  "title": "NgxBoostSidebarMenu ng-add Schema",
+  "type": "object",
+  "properties": {},
+  "required": []
+}

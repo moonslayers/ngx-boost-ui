@@ -99,7 +99,10 @@
                 "input": "projects/demo-app/public"
               }
             ],
-            "styles": ["projects/demo-app/src/styles.scss"]
+            "styles": [
+              "projects/demo-app/src/styles.scss",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            ],
           },
           "configurations": {
             "production": {

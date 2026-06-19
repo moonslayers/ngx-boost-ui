@@ -3,5 +3,8 @@
   "dest": "../../dist/ngx-boost-sidebar-menu",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": [
+    "src/lib/_variables.scss"
+  ]
 }

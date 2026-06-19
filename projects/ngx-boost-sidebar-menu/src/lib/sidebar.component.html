@@ -1,0 +1,107 @@
+<aside class="sidebar d-flex flex-column vh-100 border-end flex-shrink-0 shadow z-9"
+  [class.is-open]="sidebarService.isOpen()">
+
+  <!-- Brand / Logo -->
+  <div class="d-flex align-items-center gap-2 p-3 sidebar-item-icon-bg text-bg-primary mb-4">
+    <i [class]="brand().icon" class="sidebar-item-icon fs-5"></i>
+    <span class="fw-bold">{{ brand().name }}</span>
+    @if (brand().version) {
+    <span class="badge bg-primary bg-opacity-50 border border-light rounded-pill ms-auto small fw-normal">
+      {{ brand().version }}
+    </span>
+    }
+  </div>
+
+  <!-- Scrollable navigation -->
+  <nav class="d-flex flex-column gap-1 overflow-auto flex-grow-1 px-3 pb-3">
+    @for (section of sections(); track section.name; let first = $first) {
+    <!-- Section header (skipped for the first section) -->
+    @if (!first) {
+    <div class="d-flex align-items-center gap-2 mt-2 mb-1">
+      <span class="small fw-semibold text-secondary text-nowrap">{{ getSectionTitle(section) }}</span>
+      <hr class="flex-grow-1 my-0 text-secondary opacity-50">
+    </div>
+    }
+
+    <!-- Section items -->
+    <div class="d-flex flex-column gap-1">
+      @for (item of section.items; track $index) {
+      <ng-container *ngTemplateOutlet="menuRecursion; context: { $implicit: item, depth: 0 }" />
+      }
+    </div>
+    }
+  </nav>
+
+  <!-- Profile Footer -->
+  @if (profile(); as profile) {
+  <div class="p-2 border-top">
+    <div class="card">
+      <div class="card-body p-2 px-3">
+        <div class="sidebar-footer flex-shrink-0">
+          <a class="d-flex align-items-center gap-3 text-decoration-none text-body" [routerLink]="['/profile']"
+            routerLinkActive="text-primary">
+            <i class="bi bi-person-circle fs-3"></i>
+            <div class="d-flex flex-column lh-sm">
+              <span class="fw-semibold">{{ profile.userName }}</span>
+              <span class="small text-secondary">{{ profile.userRole }}</span>
+            </div>
+          </a>
+          @if (profile.onLogout) {
+          <button type="button"
+            class="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center gap-2 mt-2 w-100"
+            (click)="profile.onLogout()" aria-label="Logout">
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</aside>
+
+@if (sidebarService.isOpen()) {
+<div class="sidebar-backdrop" (click)="sidebarService.close()" (keydown.enter)="sidebarService.close()"
+  (keydown.space)="sidebarService.close()" tabindex="0" role="button" aria-label="Close menu"></div>
+}
+
+<!-- Recursive template for menu items at any depth -->
+<ng-template #menuRecursion let-item let-depth="depth">
+  <div class="d-flex flex-column">
+    @if (item.children && item.children.length > 0) {
+    <!-- Expandable parent item -->
+    <button type="button"
+      class="sidebar-item btn btn-link text-decoration-none text-body d-flex align-items-center gap-2 rounded text-start w-100"
+      [class.p-3]="depth === 0" [class.p-2]="depth > 0" [class.small]="depth > 0"
+      [class.active]="isSubMenuOpen(item, depth)" (click)="toggleSubMenu(item, depth)">
+      @if (depth === 0) {
+      <i [class]="item.icon || 'bi-circle'" class="text-center flex-shrink-0"></i>
+      } @else {
+      <i class="bi bi-dot text-center flex-shrink-0"></i>
+      }
+      <span class="flex-grow-1 text-truncate">{{ item.label }}</span>
+      <i class="bi-chevron-down sidebar-arrow ms-auto" [class.expanded]="isSubMenuOpen(item, depth)"></i>
+    </button>
+    @if (isSubMenuOpen(item, depth)) {
+    <div class="sidebar-submenu d-flex flex-column gap-1 ps-3 pt-1" [class.ms-3]="depth > 0">
+      @for (child of item.children; track $index) {
+      <ng-container *ngTemplateOutlet="menuRecursion; context: { $implicit: child, depth: depth + 1 }" />
+      }
+    </div>
+    }
+    } @else {
+    <!-- Leaf item -->
+    <a class="sidebar-item d-flex align-items-center gap-2 rounded text-decoration-none text-body"
+      [class.p-3]="depth === 0" [class.p-2]="depth > 0" [class.small]="depth > 0"
+      [class.sidebar-item-icon-bg]="depth === 0" [routerLink]="item.route" routerLinkActive="active"
+      [routerLinkActiveOptions]="{exact: true}">
+      @if (depth === 0) {
+      <i [class]="item.icon || 'bi-circle'" class="text-center flex-shrink-0 sidebar-item-icon"></i>
+      } @else {
+      <i class="bi bi-dot text-center flex-shrink-0"></i>
+      }
+      <span class="flex-grow-1 text-truncate">{{ item.label }}</span>
+    </a>
+    }
+  </div>
+</ng-template>

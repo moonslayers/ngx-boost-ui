@@ -1,0 +1,20 @@
+// =============================================
+// ngx-boost-sidebar-menu — Variables Sass
+// =============================================
+// Estas variables se pueden sobreescribir en el
+// proyecto consumidor para personalizar el sidebar.
+//
+// Ejemplo:
+//   $ngx-sidebar-width: 280px;
+//   @import '~ngx-boost-sidebar-menu/variables';
+// =============================================
+
+$ngx-sidebar-width: 260px !default;
+$ngx-sidebar-transition: width 0.3s ease, transform 0.3s ease !default;
+$ngx-sidebar-z-index: 1040 !default;
+$ngx-sidebar-backdrop-z-index: 1050 !default;
+$ngx-sidebar-mobile-breakpoint: 991.98px !default;
+$ngx-sidebar-icon-bg-opacity: 0.1 !default;
+$ngx-sidebar-item-hover-opacity: 0.06 !default;
+$ngx-sidebar-submenu-animation-duration: 0.2s !default;
+$ngx-sidebar-arrow-rotation-duration: 0.25s !default;
