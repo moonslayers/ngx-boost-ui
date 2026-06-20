@@ -1,59 +1,79 @@
-# NgxBoostUi
+# ngx-boost-ui
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.1.
+Monorepo de librerías UI para Angular + Bootstrap 5 con Bootstrap Icons.
 
-## Development server
+**Repositorio:** [moonslayers/ngx-boost-ui](https://github.com/moonslayers/ngx-boost-ui)
 
-To start a local development server, run:
+## Estructura
 
-```bash
-ng serve
+```
+projects/
+├── ngx-boost-sidebar-menu/   → Sidebar de navegación responsive
+├── ngx-boost-topbar/         → Topbar (esqueleto)
+└── demo-app/                 → App demo que consume las librerías
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Cada librería se publica como paquete npm independiente. La `demo-app` es solo para desarrollo y no se publica.
 
-## Code scaffolding
+## Stack
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+| Tecnología | Versión |
+|---|---|
+| Angular | ^22.0.0 |
+| Bootstrap | ^5.3.x |
+| Bootstrap Icons | ^1.13.x |
+| TypeScript | ~6.0.2 |
+| Testing | Vitest (`@angular/build:unit-test`) |
+| Lint | angular-eslint + ESLint 10 |
+| Formateo | Prettier |
 
-```bash
-ng generate component component-name
-```
+## Desarrollo
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Las librerías se compilan con `compilationMode: partial` (ng-packagr).
+La demo-app resuelve los imports de las librerías via path mapping a `./dist/`, por lo que el orden correcto es:
 
 ```bash
-ng test
+# 1. Build librería
+ng build ngx-boost-sidebar-menu
+
+# 2. Servir demo-app
+ng serve demo-app
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Comandos por proyecto
 
 ```bash
-ng e2e
+# Lint
+npm run lint ngx-boost-sidebar-menu
+npm run lint demo-app
+
+# Tests
+npm run test ngx-boost-sidebar-menu
+npm run test demo-app
+
+# Build
+npm run build ngx-boost-sidebar-menu
+npm run build demo-app
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## CI/CD
 
-## Additional Resources
+GitHub Actions en `.github/workflows/ci.yml`:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Push/PR a `main`**: ejecuta lint → test → build de todos los proyectos
+- **Push a `main` (calidad ok)**: detecta cambios de versión en cada librería y publica a npm las que cambiaron
+
+La demo-app no se publica, solo sirve para verificación y ejemplos.
+
+## Nueva librería
+
+Para agregar una librería a `projects/ngx-boost-<name>/`:
+
+1. Seguir la arquitectura estándar del proyecto (standalone components, signals, `provide*Config()` pattern)
+2. Agregar ejemplos de uso en la demo-app (componentes, rutas, providers)
+3. Registrar en `.github/workflows/ci.yml` los pasos de lint, test y build
+4. Agregar path mapping en `tsconfig.json`
+
+## Licencia
+
+MIT

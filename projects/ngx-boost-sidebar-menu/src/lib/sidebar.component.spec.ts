@@ -3,6 +3,20 @@ import { SidebarComponent } from './sidebar.component';
 import { provideSidebarConfig } from './sidebar-token';
 import { provideRouter } from '@angular/router';
 
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => { console.log('addListener'); },
+    removeListener: () => { console.log('removeListener'); },
+    addEventListener: () => { console.log('addEventListener'); },
+    removeEventListener: () => { console.log('removeEventListener'); },
+    dispatchEvent: () => false,
+  }),
+});
+
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
@@ -33,7 +47,7 @@ describe('SidebarComponent', () => {
     profile: {
       userName: 'TestUser',
       userRole: 'Admin',
-      onLogout: () => {},
+      onLogout: () => { console.log('logout'); },
     },
   };
 

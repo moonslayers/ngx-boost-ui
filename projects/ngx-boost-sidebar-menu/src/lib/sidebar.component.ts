@@ -15,7 +15,7 @@ import { SIDEBAR_CONFIG } from './sidebar-token';
 import type { SidebarSection, SidebarItem } from './sidebar.types';
 
 @Component({
-  selector: 'ngx-boost-sidebar-menu',
+  selector: 'app-sidebar-menu',
   imports: [RouterLink, RouterLinkActive, NgTemplateOutlet],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',

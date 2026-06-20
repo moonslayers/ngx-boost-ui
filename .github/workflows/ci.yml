@@ -1,0 +1,87 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - run: npm run lint ngx-boost-sidebar-menu
+      - run: npm run lint ngx-boost-topbar
+      - run: npm run lint demo-app
+
+      - run: npm run test ngx-boost-sidebar-menu
+      - run: npm run test ngx-boost-topbar
+
+      - run: npm run build ngx-boost-sidebar-menu
+      - run: npm run build ngx-boost-topbar
+
+      - run: npm run test demo-app
+
+      - run: npm run build demo-app
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+
+      - name: Publish ngx-boost-sidebar-menu
+        run: |
+          PKG="ngx-boost-sidebar-menu"
+          LOCAL=$(node -p "require('./projects/${PKG}/package.json').version")
+          echo "Local version: ${LOCAL}"
+          PUBLISHED=$(npm view ${PKG} version 2>/dev/null || echo "")
+          echo "Published version: ${PUBLISHED:-none}"
+          if [ "$LOCAL" != "$PUBLISHED" ]; then
+            echo "New version detected, dry-run first..."
+            npm run build ${PKG}
+            npm publish dist/${PKG}/ --dry-run
+            echo "Dry-run ok, publishing..."
+            npm publish dist/${PKG}/
+          else
+            echo "No version change for ${PKG}, skipping publish"
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish ngx-boost-topbar
+        run: |
+          PKG="ngx-boost-topbar"
+          LOCAL=$(node -p "require('./projects/${PKG}/package.json').version")
+          echo "Local version: ${LOCAL}"
+          PUBLISHED=$(npm view ${PKG} version 2>/dev/null || echo "")
+          echo "Published version: ${PUBLISHED:-none}"
+          if [ "$LOCAL" != "$PUBLISHED" ]; then
+            echo "New version detected, dry-run first..."
+            npm run build ${PKG}
+            npm publish dist/${PKG}/ --dry-run
+            echo "Dry-run ok, publishing..."
+            npm publish dist/${PKG}/
+          else
+            echo "No version change for ${PKG}, skipping publish"
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
