@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-permissions:
-  id-token: write
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -121,6 +117,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          registry-url: https://registry.npmjs.org
       - run: npm ci
 
       - name: Publish ngx-boost-sidebar-menu
@@ -133,11 +130,13 @@ jobs:
           if [ "$LOCAL" != "$PUBLISHED" ]; then
             echo "New version detected, building..."
             npm run build ${PKG}
-            echo "Publishing with Trusted Publishing..."
+            echo "Publishing..."
             npm publish dist/${PKG}/ --access public
           else
             echo "No version change for ${PKG}, skipping publish"
           fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish ngx-boost-topbar
         run: |
@@ -149,8 +148,10 @@ jobs:
           if [ "$LOCAL" != "$PUBLISHED" ]; then
             echo "New version detected, building..."
             npm run build ${PKG}
-            echo "Publishing with Trusted Publishing..."
+            echo "Publishing..."
             npm publish dist/${PKG}/ --access public
           else
             echo "No version change for ${PKG}, skipping publish"
           fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
