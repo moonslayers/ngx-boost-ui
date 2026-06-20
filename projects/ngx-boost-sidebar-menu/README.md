@@ -1,37 +1,37 @@
 # ngx-boost-sidebar-menu
 
-Sidebar de navegación responsive para Angular + Bootstrap 5, con soporte de submenús anidados, secciones, perfil de usuario, y colapso automático en móvil.
+Responsive sidebar navigation component for Angular + Bootstrap 5, with nested submenus, sections, user profile, and auto-collapse on mobile.
 
-## Características
+## Features
 
-- **Responsive**: colapsado por defecto en móvil (< 992px), abierto en desktop
-- **Submenús anidados**: profundidad arbitraria con animación slideDown
-- **Secciones**: múltiples secciones con header opcional (la primera sección no muestra header)
-- **RouterLink**: integración directa con Angular Router, con `routerLinkActive` y apertura automática de submenús en ruta activa
-- **Perfil de usuario**: footer opcional con nombre, rol y botón de logout
-- **Servicio**: `SidebarService` con signals y observable para controlar estado desde cualquier parte
-- **Backdrop**: overlay semi-transparente en móvil al abrir el sidebar
-- **Sass variables**: personalizables mediante override
+- **Responsive**: collapsed by default on mobile (< 992px), open on desktop
+- **Nested submenus**: arbitrary depth with slideDown animation
+- **Sections**: multiple sections with optional header (the first section hides the header)
+- **RouterLink**: direct integration with Angular Router, `routerLinkActive`, and automatic submenu expansion for active routes
+- **User profile**: optional footer with name, role, and logout button
+- **Service**: `SidebarService` with signals and observable to control state from anywhere
+- **Backdrop**: semi-transparent overlay on mobile when the sidebar is open
+- **Sass variables**: customizable via override
 
-## Requisitos
+## Requirements
 
-| Dependencia     | Versión |
-| --------------- | ------- |
-| Angular         | ^22.0.0 |
-| Bootstrap       | ^5.3.x  |
+| Dependency | Version |
+|---|---|
+| Angular | ^22.0.0 |
+| Bootstrap | ^5.3.x |
 | bootstrap-icons | ^1.13.x |
 
-## Instalación
+## Installation
 
 ```bash
 npm install ngx-boost-sidebar-menu bootstrap bootstrap-icons
 ```
 
-Funciona con proyectos que usen **Sass** o **CSS plano**. La librería compila su propio SCSS a CSS durante el build, así que no necesitas un preprocesador para consumirla.
+Works with projects using **Sass** or **plain CSS**. The library compiles its own SCSS to CSS during build so you don't need a preprocessor to consume it.
 
-### Con Sass (recomendado)
+### With Sass (recommended)
 
-Agrega Bootstrap Icons y Bootstrap a los `styles` de tu `angular.json`:
+Add Bootstrap Icons and Bootstrap to the `styles` in your `angular.json`:
 
 ```json
 "styles": [
@@ -40,18 +40,18 @@ Agrega Bootstrap Icons y Bootstrap a los `styles` de tu `angular.json`:
 ]
 ```
 
-Importa Bootstrap en tu SCSS principal:
+Import Bootstrap in your main SCSS:
 
 ```scss
 // src/styles.scss
 @import 'bootstrap/scss/bootstrap';
 ```
 
-**Ventaja**: puedes personalizar el sidebar sobreescribiendo las variables Sass (ver sección [Personalización con Sass](#personalizaci%C3%B3n-con-sass)).
+**Benefit**: you can customize the sidebar by overriding Sass variables (see [Sass customization](#sass-customization)).
 
-### Con CSS plano
+### With plain CSS
 
-Agrega ambos CSS a los `styles` de tu `angular.json`:
+Add both CSS files to the `styles` in your `angular.json`:
 
 ```json
 "styles": [
@@ -60,15 +60,15 @@ Agrega ambos CSS a los `styles` de tu `angular.json`:
 ]
 ```
 
-No necesitas archivos SCSS ni import adicionales.
+No SCSS files or additional imports needed.
 
-**Diferencia**: la personalización via variables Sass no está disponible. El sidebar usará los valores por defecto. Para cambios de estilo, deberías sobrescribir clases CSS manualmente en tu propio stylesheet.
+**Difference**: Sass variable customization is not available. The sidebar will use default values. For style changes, override CSS classes manually in your own stylesheet.
 
-## Uso básico
+## Basic usage
 
-### 1. Proveer configuración
+### 1. Provide configuration
 
-En `app.config.ts`:
+In `app.config.ts`:
 
 ```typescript
 import { ApplicationConfig } from '@angular/core';
@@ -80,7 +80,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter([
       { path: '', component: HomeComponent },
       { path: 'profile', component: ProfileComponent },
-      // ... tus rutas
+      // ... your routes
     ]),
     provideSidebarConfig({
       brand: {
@@ -98,9 +98,9 @@ export const appConfig: ApplicationConfig = {
         },
         {
           name: 'projects',
-          title: 'Proyectos',
+          title: 'Projects',
           items: [
-            { label: 'Ver todos', icon: 'bi-folder', route: '/projects' },
+            { label: 'View all', icon: 'bi-folder', route: '/projects' },
           ],
         },
       ],
@@ -108,7 +108,7 @@ export const appConfig: ApplicationConfig = {
         userName: 'moonslayers',
         userRole: 'admin',
         onLogout: () => {
-          console.log('Cerrando sesión...');
+          console.log('Logging out...');
         },
       },
     }),
@@ -116,7 +116,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-### 2. Importar el componente standalone
+### 2. Import the standalone component
 
 ```typescript
 import { Component } from '@angular/core';
@@ -138,19 +138,19 @@ import { SidebarComponent } from 'ngx-boost-sidebar-menu';
 export class App {}
 ```
 
-¡Listo! El sidebar ya funciona.
+That's it! The sidebar is ready to use.
 
 ## API
 
-### Interfaces de configuración
+### Configuration interfaces
 
 #### `SidebarBrand`
 
 ```typescript
 interface SidebarBrand {
-  icon: string;       // Clase Bootstrap Icon (ej: 'bi-moon-stars')
-  name: string;       // Nombre de la marca/aplicación
-  version?: string;   // Versión opcional (se muestra como badge)
+  icon: string;       // Bootstrap Icon class (e.g. 'bi-moon-stars')
+  name: string;       // Brand / application name
+  version?: string;   // Optional version (shown as a badge)
 }
 ```
 
@@ -158,10 +158,10 @@ interface SidebarBrand {
 
 ```typescript
 interface SidebarItem {
-  label: string;                    // Texto visible
-  icon?: string;                    // Clase Bootstrap Icon
-  route?: string;                   // Ruta Angular (routerLink)
-  children?: SidebarItem[];         // Subítems para menú anidado
+  label: string;                    // Visible text
+  icon?: string;                    // Bootstrap Icon class
+  route?: string;                   // Angular route (routerLink)
+  children?: SidebarItem[];         // Sub-items for nested menu
 }
 ```
 
@@ -169,21 +169,21 @@ interface SidebarItem {
 
 ```typescript
 interface SidebarSection {
-  name: string;                    // Identificador único
-  title?: string;                  // Título visible. Si no se provee, se capitaliza `name`
-  items: SidebarItem[];            // Items del menú
+  name: string;                    // Unique identifier
+  title?: string;                  // Visible title. Falls back to capitalized `name`
+  items: SidebarItem[];            // Menu items
 }
 ```
 
-> La **primera sección** nunca muestra el header (title), ideal para ítems principales como Dashboard, Home, etc.
+> The **first section** never shows a header (title), ideal for main items like Dashboard, Home, etc.
 
 #### `SidebarProfile`
 
 ```typescript
 interface SidebarProfile {
-  userName: string;       // Nombre del usuario
-  userRole: string;       // Rol del usuario
-  onLogout?: () => void;  // Callback al hacer click en Logout
+  userName: string;       // User name
+  userRole: string;       // User role
+  onLogout?: () => void;  // Callback when clicking Logout
 }
 ```
 
@@ -191,9 +191,9 @@ interface SidebarProfile {
 
 ```typescript
 interface SidebarConfig {
-  brand: SidebarBrand;           // Marca/logo del sidebar
-  sections: SidebarSection[];    // Secciones de navegación
-  profile?: SidebarProfile;      // Footer con perfil de usuario
+  brand: SidebarBrand;           // Sidebar brand / logo
+  sections: SidebarSection[];    // Navigation sections
+  profile?: SidebarProfile;      // Footer with user profile
 }
 ```
 
@@ -203,21 +203,21 @@ interface SidebarConfig {
 provideSidebarConfig(config: SidebarConfig): Provider[]
 ```
 
-Usar en el array `providers` de `ApplicationConfig` o de un componente.
+Use in the `providers` array of `ApplicationConfig` or a component.
 
 ### SidebarService
 
 ```typescript
 class SidebarService {
-  readonly isOpen: Signal<boolean>;     // Signal readonly del estado
-  readonly isOpen$: Observable<boolean>; // Observable del estado
-  toggle(): void;                        // Alterna abierto/cerrado
-  open(): void;                          // Abre el sidebar
-  close(): void;                         // Cierra el sidebar
+  readonly isOpen: Signal<boolean>;     // Readonly signal for state
+  readonly isOpen$: Observable<boolean>; // Observable for state
+  toggle(): void;                        // Toggle open/closed
+  open(): void;                          // Open the sidebar
+  close(): void;                         // Close the sidebar
 }
 ```
 
-El servicio se provee en `root`. Úsalo para controlar el sidebar desde otros componentes (ej: un botón hamburguesa en un topbar):
+The service is provided in `root`. Use it to control the sidebar from other components (e.g., a hamburger button in a topbar):
 
 ```typescript
 import { inject } from '@angular/core';
@@ -235,16 +235,16 @@ export class TopbarComponent {
 }
 ```
 
-### Comportamiento responsive
+### Responsive behavior
 
-| Viewport          | Breakpoint    | Sidebar                            |
-| ----------------- | ------------- | ---------------------------------- |
-| Móvil             | < 992px       | Oculto por defecto, se superpone con backdrop al abrirse |
-| Desktop           | >= 992px      | Visible por defecto, ocupa 260px   |
+| Viewport | Breakpoint | Sidebar |
+|---|---|---|
+| Mobile | < 992px | Hidden by default, overlays with backdrop when open |
+| Desktop | >= 992px | Visible by default, occupies 260px |
 
-## Personalización con Sass
+## Sass customization
 
-Puedes sobreescribir las variables Sass antes de importar Bootstrap:
+Override Sass variables before importing Bootstrap:
 
 ```scss
 $ngx-sidebar-width: 280px;
@@ -254,17 +254,17 @@ $ngx-sidebar-mobile-breakpoint: 768px;
 @import 'ngx-boost-sidebar-menu/variables';
 ```
 
-| Variable                               | Default    | Descripción                         |
-| -------------------------------------- | ---------- | ----------------------------------- |
-| `$ngx-sidebar-width`                   | `260px`    | Ancho del sidebar en desktop        |
-| `$ngx-sidebar-transition`              | `width 0.3s ease, transform 0.3s ease` | Transición de apertura/cierre |
-| `$ngx-sidebar-z-index`                 | `1040`     | Z-index del sidebar                 |
-| `$ngx-sidebar-backdrop-z-index`        | `1050`     | Z-index del backdrop móvil          |
-| `$ngx-sidebar-mobile-breakpoint`       | `991.98px` | Breakpoint para vista móvil         |
-| `$ngx-sidebar-icon-bg-opacity`         | `0.1`      | Opacidad del fondo de iconos        |
-| `$ngx-sidebar-item-hover-opacity`      | `0.06`     | Opacidad del hover de ítems         |
-| `$ngx-sidebar-submenu-animation-duration` | `0.2s`  | Duración animación submenú          |
-| `$ngx-sidebar-arrow-rotation-duration`    | `0.25s` | Duración rotación flecha expandible |
+| Variable | Default | Description |
+|---|---|---|
+| `$ngx-sidebar-width` | `260px` | Sidebar width on desktop |
+| `$ngx-sidebar-transition` | `width 0.3s ease, transform 0.3s ease` | Open/close transition |
+| `$ngx-sidebar-z-index` | `1040` | Sidebar z-index |
+| `$ngx-sidebar-backdrop-z-index` | `1050` | Mobile backdrop z-index |
+| `$ngx-sidebar-mobile-breakpoint` | `991.98px` | Mobile breakpoint |
+| `$ngx-sidebar-icon-bg-opacity` | `0.1` | Icon background opacity |
+| `$ngx-sidebar-item-hover-opacity` | `0.06` | Item hover opacity |
+| `$ngx-sidebar-submenu-animation-duration` | `0.2s` | Submenu animation duration |
+| `$ngx-sidebar-arrow-rotation-duration` | `0.25s` | Arrow rotation duration |
 
 ## Testing
 
@@ -272,6 +272,6 @@ $ngx-sidebar-mobile-breakpoint: 768px;
 ng test ngx-boost-sidebar-menu
 ```
 
-## Licencia
+## License
 
 MIT

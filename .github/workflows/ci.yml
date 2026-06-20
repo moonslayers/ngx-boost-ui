@@ -6,12 +6,76 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  id-token: write
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.detect.outputs.projects }}
+      any: ${{ steps.detect.outputs.any }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: detect
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+          fi
+
+          PROJECTS='[]'
+
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            # First push or no base — run everything
+            PROJECTS='["ngx-boost-sidebar-menu","ngx-boost-topbar","demo-app"]'
+          else
+            CHANGED=$(git diff --name-only "$BASE" HEAD || echo "")
+
+            # Root config changes affect all
+            if echo "$CHANGED" | grep -qE '^(package\.json|angular\.json|tsconfig|eslint|\.github/|\.node-version)'; then
+              PROJECTS='["ngx-boost-sidebar-menu","ngx-boost-topbar","demo-app"]'
+            else
+              LIB_SIDEBAR=false
+              LIB_TOPBAR=false
+
+              if echo "$CHANGED" | grep -q '^projects/ngx-boost-sidebar-menu/'; then
+                PROJECTS=$(echo "$PROJECTS" | jq '. + ["ngx-boost-sidebar-menu"]')
+                LIB_SIDEBAR=true
+              fi
+
+              if echo "$CHANGED" | grep -q '^projects/ngx-boost-topbar/'; then
+                PROJECTS=$(echo "$PROJECTS" | jq '. + ["ngx-boost-topbar"]')
+                LIB_TOPBAR=true
+              fi
+
+              if echo "$CHANGED" | grep -q '^projects/demo-app/'; then
+                PROJECTS=$(echo "$PROJECTS" | jq '. + ["demo-app"]')
+              fi
+
+              # If any library changed, demo-app must be verified too
+              if [ "$LIB_SIDEBAR" = "true" ] || [ "$LIB_TOPBAR" = "true" ]; then
+                if ! echo "$PROJECTS" | jq -e 'contains(["demo-app"])' > /dev/null 2>&1; then
+                  PROJECTS=$(echo "$PROJECTS" | jq '. + ["demo-app"]')
+                fi
+              fi
+            fi
+          fi
+
+          echo "projects=$PROJECTS" >> $GITHUB_OUTPUT
+          echo "any=$(echo "$PROJECTS" | jq 'length > 0')" >> $GITHUB_OUTPUT
+
   quality:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.any == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,19 +85,31 @@ jobs:
           cache: npm
       - run: npm ci
 
+      # Lint — only affected projects
       - run: npm run lint ngx-boost-sidebar-menu
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'ngx-boost-sidebar-menu') }}
       - run: npm run lint ngx-boost-topbar
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'ngx-boost-topbar') }}
       - run: npm run lint demo-app
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'demo-app') }}
 
+      # Test — only affected libraries
       - run: npm run test ngx-boost-sidebar-menu
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'ngx-boost-sidebar-menu') }}
       - run: npm run test ngx-boost-topbar
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'ngx-boost-topbar') }}
 
+      # Build libraries — affected + those needed by demo-app
       - run: npm run build ngx-boost-sidebar-menu
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'ngx-boost-sidebar-menu') || contains(fromJSON(needs.detect-changes.outputs.projects), 'demo-app') }}
       - run: npm run build ngx-boost-topbar
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'ngx-boost-topbar') }}
 
+      # Demo-app: test + build
       - run: npm run test demo-app
-
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'demo-app') }}
       - run: npm run build demo-app
+        if: ${{ contains(fromJSON(needs.detect-changes.outputs.projects), 'demo-app') }}
 
   publish:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -45,7 +121,6 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          registry-url: https://registry.npmjs.org
       - run: npm ci
 
       - name: Publish ngx-boost-sidebar-menu
@@ -56,16 +131,13 @@ jobs:
           PUBLISHED=$(npm view ${PKG} version 2>/dev/null || echo "")
           echo "Published version: ${PUBLISHED:-none}"
           if [ "$LOCAL" != "$PUBLISHED" ]; then
-            echo "New version detected, dry-run first..."
+            echo "New version detected, building..."
             npm run build ${PKG}
-            npm publish dist/${PKG}/ --dry-run --access public
-            echo "Dry-run ok, publishing..."
-            npm publish dist/${PKG}/ --access public
+            echo "Publishing with Trusted Publishing..."
+            npm publish dist/${PKG}/ --access public --provenance
           else
             echo "No version change for ${PKG}, skipping publish"
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish ngx-boost-topbar
         run: |
@@ -75,13 +147,10 @@ jobs:
           PUBLISHED=$(npm view ${PKG} version 2>/dev/null || echo "")
           echo "Published version: ${PUBLISHED:-none}"
           if [ "$LOCAL" != "$PUBLISHED" ]; then
-            echo "New version detected, dry-run first..."
+            echo "New version detected, building..."
             npm run build ${PKG}
-            npm publish dist/${PKG}/ --dry-run --access public
-            echo "Dry-run ok, publishing..."
-            npm publish dist/${PKG}/ --access public
+            echo "Publishing with Trusted Publishing..."
+            npm publish dist/${PKG}/ --access public --provenance
           else
             echo "No version change for ${PKG}, skipping publish"
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

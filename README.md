@@ -1,23 +1,23 @@
 # ngx-boost-ui
 
-Monorepo de librerías UI para Angular + Bootstrap 5 con Bootstrap Icons.
+Monorepo of UI libraries for Angular + Bootstrap 5 with Bootstrap Icons.
 
-**Repositorio:** [moonslayers/ngx-boost-ui](https://github.com/moonslayers/ngx-boost-ui)
+**Repository:** [moonslayers/ngx-boost-ui](https://github.com/moonslayers/ngx-boost-ui)
 
-## Estructura
+## Structure
 
 ```
 projects/
-├── ngx-boost-sidebar-menu/   → Sidebar de navegación responsive
-├── ngx-boost-topbar/         → Topbar (esqueleto)
-└── demo-app/                 → App demo que consume las librerías
+├── ngx-boost-sidebar-menu/   → Responsive sidebar navigation
+├── ngx-boost-topbar/         → Topbar (skeleton)
+└── demo-app/                 → Demo app that consumes the libraries
 ```
 
-Cada librería se publica como paquete npm independiente. La `demo-app` es solo para desarrollo y no se publica.
+Each library is published as an independent npm package. The `demo-app` is for development only and is not published.
 
 ## Stack
 
-| Tecnología | Versión |
+| Technology | Version |
 |---|---|
 | Angular | ^22.0.0 |
 | Bootstrap | ^5.3.x |
@@ -25,22 +25,22 @@ Cada librería se publica como paquete npm independiente. La `demo-app` es solo 
 | TypeScript | ~6.0.2 |
 | Testing | Vitest (`@angular/build:unit-test`) |
 | Lint | angular-eslint + ESLint 10 |
-| Formateo | Prettier |
+| Formatting | Prettier |
 
-## Desarrollo
+## Development
 
-Las librerías se compilan con `compilationMode: partial` (ng-packagr).
-La demo-app resuelve los imports de las librerías via path mapping a `./dist/`, por lo que el orden correcto es:
+Libraries are built with `compilationMode: partial` (ng-packagr).
+The demo-app resolves library imports via path mapping to `./dist/`, so the correct order is:
 
 ```bash
-# 1. Build librería
+# 1. Build library
 ng build ngx-boost-sidebar-menu
 
-# 2. Servir demo-app
+# 2. Serve demo-app
 ng serve demo-app
 ```
 
-### Comandos por proyecto
+### Per-project commands
 
 ```bash
 # Lint
@@ -58,22 +58,22 @@ npm run build demo-app
 
 ## CI/CD
 
-GitHub Actions en `.github/workflows/ci.yml`:
+GitHub Actions in `.github/workflows/ci.yml`:
 
-- **Push/PR a `main`**: ejecuta lint → test → build de todos los proyectos
-- **Push a `main` (calidad ok)**: detecta cambios de versión en cada librería y publica a npm las que cambiaron
+- **Push/PR to `main`**: runs lint → test → build for affected projects only
+- **Push to `main` (quality pass)**: detects version changes in each library and publishes to npm using Trusted Publishing
 
-La demo-app no se publica, solo sirve para verificación y ejemplos.
+The demo-app is not published, it only serves for verification and examples.
 
-## Nueva librería
+## Adding a new library
 
-Para agregar una librería a `projects/ngx-boost-<name>/`:
+To add a library at `projects/ngx-boost-<name>/`:
 
-1. Seguir la arquitectura estándar del proyecto (standalone components, signals, `provide*Config()` pattern)
-2. Agregar ejemplos de uso en la demo-app (componentes, rutas, providers)
-3. Registrar en `.github/workflows/ci.yml` los pasos de lint, test y build
-4. Agregar path mapping en `tsconfig.json`
+1. Follow the project's standard architecture (standalone components, signals, `provide*Config()` pattern)
+2. Add usage examples in the demo-app (components, routes, providers)
+3. Register lint, test and build steps in `.github/workflows/ci.yml`
+4. Add path mapping in `tsconfig.json`
 
-## Licencia
+## License
 
 MIT

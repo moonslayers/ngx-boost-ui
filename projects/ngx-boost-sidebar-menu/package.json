@@ -1,6 +1,6 @@
 {
   "name": "ngx-boost-sidebar-menu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sidebar de navegación responsive para Angular + Bootstrap 5, con submenús anidados, secciones, perfil de usuario y colapso automático en móvil.",
   "license": "MIT",
   "repository": {
