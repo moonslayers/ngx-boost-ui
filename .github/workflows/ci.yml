@@ -134,7 +134,7 @@ jobs:
             echo "New version detected, building..."
             npm run build ${PKG}
             echo "Publishing with Trusted Publishing..."
-            npm publish dist/${PKG}/ --access public --provenance
+            npm publish dist/${PKG}/ --access public
           else
             echo "No version change for ${PKG}, skipping publish"
           fi
@@ -150,7 +150,7 @@ jobs:
             echo "New version detected, building..."
             npm run build ${PKG}
             echo "Publishing with Trusted Publishing..."
-            npm publish dist/${PKG}/ --access public --provenance
+            npm publish dist/${PKG}/ --access public
           else
             echo "No version change for ${PKG}, skipping publish"
           fi
