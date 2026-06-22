@@ -1,6 +1,11 @@
 {
   "name": "ngx-boost-topbar",
   "version": "0.0.1",
+  "homepage": "https://github.com/moonslayers/ngx-boost-ui/tree/main/projects/ngx-boost-topbar#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moonslayers/ngx-boost-ui.git"
+  },
   "peerDependencies": {
     "@angular/common": "^22.0.0",
     "@angular/core": "^22.0.0"
