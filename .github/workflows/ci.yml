@@ -44,30 +44,30 @@ jobs:
               LIB_TOPBAR=false
 
               if echo "$CHANGED" | grep -q '^projects/ngx-boost-sidebar-menu/'; then
-                PROJECTS=$(echo "$PROJECTS" | jq '. + ["ngx-boost-sidebar-menu"]')
+                PROJECTS=$(echo "$PROJECTS" | jq -c '. + ["ngx-boost-sidebar-menu"]')
                 LIB_SIDEBAR=true
               fi
 
               if echo "$CHANGED" | grep -q '^projects/ngx-boost-topbar/'; then
-                PROJECTS=$(echo "$PROJECTS" | jq '. + ["ngx-boost-topbar"]')
+                PROJECTS=$(echo "$PROJECTS" | jq -c '. + ["ngx-boost-topbar"]')
                 LIB_TOPBAR=true
               fi
 
               if echo "$CHANGED" | grep -q '^projects/demo-app/'; then
-                PROJECTS=$(echo "$PROJECTS" | jq '. + ["demo-app"]')
+                PROJECTS=$(echo "$PROJECTS" | jq -c '. + ["demo-app"]')
               fi
 
               # If any library changed, demo-app must be verified too
               if [ "$LIB_SIDEBAR" = "true" ] || [ "$LIB_TOPBAR" = "true" ]; then
-                if ! echo "$PROJECTS" | jq -e 'contains(["demo-app"])' > /dev/null 2>&1; then
-                  PROJECTS=$(echo "$PROJECTS" | jq '. + ["demo-app"]')
+                if ! echo "$PROJECTS" | jq -ec 'contains(["demo-app"])' > /dev/null 2>&1; then
+                  PROJECTS=$(echo "$PROJECTS" | jq -c '. + ["demo-app"]')
                 fi
               fi
             fi
           fi
 
           echo "projects=$PROJECTS" >> $GITHUB_OUTPUT
-          echo "any=$(echo "$PROJECTS" | jq 'length > 0')" >> $GITHUB_OUTPUT
+          echo "any=$(echo "$PROJECTS" | jq -c 'length > 0')" >> $GITHUB_OUTPUT
 
   quality:
     needs: detect-changes
