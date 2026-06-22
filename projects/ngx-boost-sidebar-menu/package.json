@@ -1,6 +1,6 @@
 {
   "name": "ngx-boost-sidebar-menu",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Responsive sidebar navigation component for Angular + Bootstrap 5, with nested submenus, sections, user profile, and auto-collapse on mobile.",
   "license": "MIT",
   "homepage": "https://github.com/moonslayers/ngx-boost-ui/tree/main/projects/ngx-boost-sidebar-menu#readme",
